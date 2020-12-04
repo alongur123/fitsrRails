@@ -2,6 +2,7 @@ module Api
     module V1
         class UsersController < ApplicationController
             def index
+                # UserService.new()
                 user = User.order('created_at DESC');
                 render json: {status: 'Success', data: user}, status: :ok;
             end
@@ -16,13 +17,12 @@ module Api
             end
 
             def create
-                user = User.new(user_params)
-                
-                if user.save
+                begin
+                    user = User.create(user_params)
                     render json: {status: 'Success', data: user}, status: :ok;
-                else
+                rescue
                     render json: {status: 'ERROR', data: user.errors}, status: :unprocessable_entity;
-                end
+                end                
             end
 
             def destroy
@@ -41,9 +41,21 @@ module Api
                 end
             end
 
+            def signIn
+                render json: {status: 'Success', data: "signIn"}
+            end
+
+            def SignOut
+                render json: {status: 'Success', data: "signOut"}
+            end
+
             private
             def user_params
-                params.permit(:first_name, :last_name, :email)
+                params.permit(:first_name, :last_name, :email, :password)
+            end
+
+            def signIn_oarams
+                params.permit(:email, :password)
             end
         end
     end
